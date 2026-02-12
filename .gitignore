@@ -39,7 +39,6 @@ datasets/
 
 # config folder
 !projects/neuralangelo/configs/custom/template.yaml
-projects/neuralangelo/configs/custom
 
 # ------------------------ BELOW IS AUTO-GENERATED FOR PYTHON REPOS ------------------------
 

@@ -1,6 +1,7 @@
+numpy<2.0
+cython<3.0
 addict
 gdown
-git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
 gpustat
 icecream
 imageio-ffmpeg
@@ -20,7 +21,6 @@ pillow
 plotly
 pyequilib
 pyexr
-PyMCubes
 pyquaternion
 pyyaml
 requests

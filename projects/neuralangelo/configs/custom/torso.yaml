@@ -1,0 +1,58 @@
+# -----------------------------------------------------------------------------
+# Copyright (c) 2023, NVIDIA CORPORATION. All rights reserved.
+#
+# NVIDIA CORPORATION and its licensors retain all intellectual property
+# and proprietary rights in and to this software, related documentation
+# and any modifications thereto. Any use, reproduction, disclosure or
+# distribution of this software and related documentation without an express
+# license agreement from NVIDIA CORPORATION is strictly prohibited.
+# -----------------------------------------------------------------------------
+
+_parent_: projects/neuralangelo/configs/base.yaml
+
+model:
+    object:
+        sdf:
+            mlp:
+                inside_out: False  # False = Object in center (Torso). True = Room.
+            encoding:
+                coarse2fine:
+                    enabled: True
+                    init_active_level: 4  # Start coarser to get the main shape first
+                    step: 5000            # Reveal finer details every 5k steps
+        s_var:
+            init_val: 3.0  # Higher variance initially helps convergence for real data
+
+    appear_embed:
+        enabled: True
+        dim: 8  # Helps handle lighting changes between frames
+
+data:
+    type: projects.neuralangelo.data
+    root: /data/torso  # Path inside the Docker container
+    num_images: 60
+    
+    # Preload and cache data to speed up training
+    preload: True
+    
+    train:
+        # If you run out of VRAM, reduce batch_size to 1
+        batch_size: 1
+        subset:     # Leave empty to use all images
+        
+        # Neuralangelo works best with square-ish crops or downscaled images
+        # 1440x1920 is VERY large. We downscale by 2x for stability.
+        image_size: [720, 960] 
+
+    val:
+        batch_size: 1
+        subset: 4   # Validate on every 4th image (saves time)
+        image_size: [720, 960]
+        max_viz_samples: 4
+
+optim:
+    max_iter: 500000  # 500k iterations is standard for high detail
+    lr_scheduler:
+        type: WarmupCosine
+        warm_up_end: 5000
+        learning_rate: 1e-3
